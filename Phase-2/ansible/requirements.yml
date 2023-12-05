@@ -1,0 +1,8 @@
+---
+roles:
+  - name: geerlingguy.nginx
+  - name: geerlingguy.java
+  - name: geerlingguy.mysql
+
+collections:
+  - name: ansible.builtin

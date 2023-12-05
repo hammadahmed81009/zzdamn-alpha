@@ -1,0 +1,8 @@
+[spectre_web]
+spectre-web ansible_host=192.168.56.101
+
+[spectre_api]
+spectre-api ansible_host=192.168.56.102
+
+[spectre_android]
+spectre-android ansible_host=192.168.56.103

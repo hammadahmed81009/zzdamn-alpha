@@ -1,0 +1,45 @@
+---
+- hosts: spectre_android
+  become: yes
+  tasks:
+    - name: Install Java and Gradle
+      apt:
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - default-jdk
+          - gradle
+
+    - name: Install Android SDK (adjust the path as needed)
+      unarchive:
+        src: http://dl.google.com/android/android-sdk_r24.4.1-linux.tgz
+        dest: /usr/local/android-sdk
+        remote_src: yes
+
+    - name: Set ANDROID_HOME environment variable
+      lineinfile:
+        path: /etc/environment
+        line: ANDROID_HOME="/usr/local/android-sdk"
+
+    - name: Clone Spectre repository
+      git:
+        repo: 'https://gitlab.com/spectre.app/android.git'
+        dest: '/opt/spectre-android'
+        clone: yes
+        update: yes
+
+    - name: Build Java components
+      shell: |
+        cd /opt/spectre-android/gradle
+        ./gradlew build
+      args:
+        executable: /bin/bash
+
+    - name: Build Android APK
+      shell: |
+        cd /opt/spectre-android/platform-android
+        ./gradlew assemble
+      args:
+        executable: /bin/bash
+      environment:
+        ANDROID_HOME: "/usr/local/android-sdk"

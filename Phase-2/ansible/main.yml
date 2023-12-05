@@ -1,0 +1,15 @@
+---
+- name: Deploy Spectre Project
+  hosts: all
+  gather_facts: yes
+  become: yes
+
+  tasks:
+    - name: Include Spectre Web playbook
+      include: application1_playbook.yml
+
+    - name: Include Spectre API playbook
+      include: application2_playbook.yml
+
+    - name: Include Spectre Android playbook
+      include: application3_playbook.yml

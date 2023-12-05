@@ -1,0 +1,39 @@
+---
+- hosts: spectre_api
+  become: yes
+  tasks:
+    # C component setup
+    - name: Install dependencies for C
+      apt:
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - build-essential
+          - git
+
+    - name: Clone Spectre API repository
+      git:
+        repo: 'https://gitlab.com/spectre.app/api.git'
+        dest: '/opt/spectre-api'
+        clone: yes
+        update: yes
+
+    - name: Compile C components
+      make:
+        chdir: /opt/spectre-api/c
+
+    # Java component setup
+    - name: Install Java and other Java build tools
+      apt:
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - default-jdk
+          - gradle
+
+    - name: Build Java components
+      shell: |
+        cd /opt/spectre-api/java
+        gradle build
+      args:
+        executable: /bin/bash

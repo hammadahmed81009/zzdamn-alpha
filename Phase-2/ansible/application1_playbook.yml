@@ -1,0 +1,49 @@
+---
+- hosts: spectre_web
+  become: yes
+  tasks:
+    - name: Install Git
+      apt:
+        name: git
+        state: present
+
+    - name: Clone Spectre Web Repository
+      git:
+        repo: 'https://gitlab.com/spectre.app/web.git'
+        dest: '/var/www/spectre-web'
+        clone: yes
+        update: yes
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Remove default Nginx configuration
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: Create Nginx Configuration for Spectre Web
+      copy:
+        dest: /etc/nginx/sites-available/spectre-web
+        content: |
+          server {
+              listen 80;
+              server_name spectre-web;
+
+              root /var/www/spectre-web;
+              index index.html;
+
+              location / {
+                  try_files $uri $uri/ =404;
+              }
+          }
+
+    - name: Enable Nginx Configuration
+      command: ln -sfn /etc/nginx/sites-available/spectre-web /etc/nginx/sites-enabled/spectre-web
+
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted

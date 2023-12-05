@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  android:
+    build: .
+    volumes:
+      - .:/usr/src/app
