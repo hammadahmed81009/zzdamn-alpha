@@ -1,0 +1,21 @@
+replicaCount: 1
+
+image:
+  repository: hammadahmed394/devops
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
